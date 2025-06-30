@@ -1,63 +1,72 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <meta charset="UTF-8">
-  <title>Payment System</title>
-  <link rel="stylesheet" href="UAB.css">
+  <meta charset="UTF-8">
+  <title>Payment System</title>
+  <link rel="stylesheet" href="UAB.css">
 </head>
 <body>
-  <div class="container">
-    <h1>💰 Money Transfer</h1>
-    <form onsubmit="event.preventDefault(); transferMoney();">
-      <div id="myForm">
-        <div class="form-group">
-          <label for="sender">Your Account ID</label>
-          <input id="sender" value="1002" readonly>
-        </div>
-        
-        <div class="form-group">
-          <label for="receiver">Receiver ID</label>
-          <input id="receiver" type="number" name="receiver" placeholder="Enter receiver's account ID" required>
-        </div>
-        
-        <div class="form-group">
-          <label for="amount">Amount</label>
-          <input id="amount" type="number" name="amount" placeholder="Enter amount to transfer" required>
-        </div>
-        
-        <button id="transferbtn" type="submit">Transfer Now</button>
-      </div>
-    </form>
+  <div class="container">
+    <h1>💰 Money Transfer</h1>
+    <form onsubmit="event.preventDefault(); transferMoney();">
+      <div id="myForm">
+        <div class="form-group">
+          <label for="sender">Your Account ID</label>
+          <input id="sender" value="1002" readonly>
+        </div>
+        
+        <div class="form-group">
+          <label for="receiver">Receiver ID</label>
+          <input id="receiver" type="number" name="receiver" placeholder="Enter receiver's account ID" required>
+        </div>
+        
+        <div class="form-group">
+          <label for="amount">Amount</label>
+          <input id="amount" type="number" name="amount" placeholder="Enter amount to transfer" required>
+        </div>
+        
+        <button id="transferbtn" type="submit">Transfer Now</button>
+      </div>
+    </form>
 
-    <div id="statusMessage" class="status-message"></div>
-  </div>
+    <div id="statusMessage" class="status-message"></div>
+  </div>
 
 <script>
-  function transferMoney() {
-    const sender = document.getElementById("sender").value;
-    const receiver = document.getElementById("receiver").value;
-    const amount = document.getElementById("amount").value;
+  function transferMoney() {
+    const sender = document.getElementById("sender").value;
+    const receiver = document.getElementById("receiver").value;
+    const amount = document.getElementById("amount").value;
 
-    const formData = new URLSearchParams();
-    formData.append("sender", sender);
-    formData.append("receiver", receiver);
-    formData.append("amount", amount);
+    const formData = new URLSearchParams();
+    formData.append("sender", sender);
+    formData.append("receiver", receiver);
+    formData.append("amount", amount);
 
-    fetch("https://script.google.com/macros/s/AKfycbwozrZFeqT1JdNTHcrjj_a8iNbxLX_XRBugwLDMcgsZoGWGNef-bSlwMfYalMzMSrHxaQ/exec", {
-  method: "POST",
-  headers: {
-    "Content-Type": "application/x-www-form-urlencoded"
-  },
-  body: formData.toString()
-})
-.then(async res => {
-  const text = await res.text();
-  document.getElementById("statusMessage").innerText = `Status: ${res.status}, Response: ${text}`;
-})
-.catch(err => {
-  document.getElementById("statusMessage").innerText = "Error: " + err;
-});
-  }
+    console.log("Sending data:", {
+      sender,
+      receiver,
+      amount
+    });
+
+    fetch("https://script.google.com/macros/s/AKfycbwozrZFeqT1JdNTHcrjj_a8iNbxLX_XRBugwLDMcgsZoGWGNef-bSlwMfYalMzMSrHxaQ/exec", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/x-www-form-urlencoded"
+      },
+      body: formData.toString()
+    })
+    .then(async res => {
+      const text = await res.text();
+      console.log("Response status:", res.status);
+      console.log("Response text:", text);
+      document.getElementById("statusMessage").innerText = `Status: ${res.status}, Response: ${text}`;
+    })
+    .catch(err => {
+      console.error("Fetch error:", err);
+      document.getElementById("statusMessage").innerText = "Error: " + err;
+    });
+  }
 </script>
 
 </body>
