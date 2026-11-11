@@ -1,73 +1,262 @@
 <!DOCTYPE html>
-<html>
+<html lang="my">
 <head>
-  <meta charset="UTF-8">
-  <title>Payment System</title>
-  <link rel="stylesheet" href="UAB.css">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Overseer (39) | ကတ္တရာခင်းခြင်းလုပ်ငန်း</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Noto+Sans+Myanmar:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{--navy:#101d32;--navy2:#172a45;--yellow:#f5c542;--yellow2:#ffdb70;--ink:#172033;--muted:#64748b;--line:#dbe2ea;--paper:#fff;--bg:#edf1f5;--green:#16794b}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:Inter,"Noto Sans Myanmar",sans-serif;background-image:linear-gradient(rgba(16,29,50,.035) 1px,transparent 1px),linear-gradient(90deg,rgba(16,29,50,.035) 1px,transparent 1px);background-size:24px 24px}
+header{background:linear-gradient(120deg,var(--navy),var(--navy2));color:white;padding:24px max(18px,calc((100% - 1120px)/2));border-bottom:5px solid var(--yellow)}
+.brand{font-size:13px;letter-spacing:2px;color:var(--yellow);font-weight:800}
+h1{font-size:clamp(22px,4vw,32px);margin:8px 0 4px;font-family:"Noto Sans Myanmar",sans-serif}
+header p{margin:0;color:#cbd5e1;font-size:13px}
+main{max-width:1120px;margin:24px auto;padding:0 16px 50px}
+.panel{background:var(--paper);border:1px solid var(--line);border-radius:14px;padding:20px;margin-bottom:18px;box-shadow:0 5px 18px #10213a0b}
+.section-head{display:flex;align-items:center;gap:10px;margin:0 0 16px;color:var(--navy);font-size:18px;font-weight:800}
+.section-head:before{content:"";width:5px;height:22px;background:var(--yellow);border-radius:5px}
+.inputs{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
+label{display:block;font-size:13px;font-weight:700;margin-bottom:7px}
+input{width:100%;padding:12px 13px;border:1px solid #cbd5e1;border-radius:9px;font:600 15px Inter,"Noto Sans Myanmar",sans-serif;outline:none;background:#fbfcfe}
+input:focus{border-color:#d5a800;box-shadow:0 0 0 3px #f5c54233}
+.hint{font-size:11px;color:var(--muted);margin-top:5px}
+.actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:18px}
+button{border:0;border-radius:9px;padding:12px 18px;font:700 14px "Noto Sans Myanmar",sans-serif;cursor:pointer}
+.primary{background:var(--yellow);color:#182337;min-width:160px}
+.secondary{background:#e8edf3;color:var(--navy)}
+button:disabled{opacity:.65;cursor:wait}
+#loading{display:none;align-items:center;gap:10px;color:var(--navy);font-weight:700;font-size:13px;margin-top:14px}
+.spinner{width:18px;height:18px;border:3px solid #e7d99e;border-top-color:#b58b00;border-radius:50%;animation:spin .7s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+#results{display:none}
+.summary{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:18px}
+.metric{background:#f5f7fa;border:1px solid var(--line);padding:14px;border-radius:10px}
+.metric small{display:block;color:var(--muted);font-size:12px;margin-bottom:8px}
+.metric strong{font-size:clamp(18px,3vw,24px);color:var(--navy);font-variant-numeric:tabular-nums;overflow-wrap:anywhere}
+.phase{margin-top:20px}
+.phase-title{background:var(--navy);color:white;padding:11px 14px;border-radius:9px 9px 0 0;font-weight:800}
+.phase-title span{color:var(--yellow);margin-right:7px}
+.table-wrap{overflow-x:auto;border:1px solid var(--line);border-top:0;border-radius:0 0 9px 9px}
+table{width:100%;border-collapse:collapse;min-width:560px}
+th,td{padding:11px 13px;text-align:left;border-bottom:1px solid #e8edf2;font-size:13px}
+th{background:#f4f6f8;color:#475569;font-size:12px}
+td.num{text-align:right;font-weight:700;font-variant-numeric:tabular-nums}
+tr:last-child td{border-bottom:0}
+.voucher{border:2px solid var(--navy);padding:0;background:white}
+.voucher-top{background:var(--navy);color:white;padding:18px;text-align:center;border-bottom:4px solid var(--yellow)}
+.voucher-top .brand{font-size:11px}
+.voucher-top h2{margin:7px 0;font-size:21px}
+.voucher-meta{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;padding:12px 16px;border-bottom:1px dashed #94a3b8;font-size:12px}
+.voucher table{min-width:0}
+.voucher th,.voucher td{padding:10px 12px}
+.voucher-foot{padding:14px 16px;font-size:12px;color:#475569;border-top:1px dashed #94a3b8}
+.notice{background:#fff9e8;border:1px solid #f1d98c;border-left:4px solid var(--yellow);padding:14px 16px;border-radius:8px;font-size:13px;line-height:1.9}
+.notice ul{margin:8px 0 0;padding-left:22px}
+.note-title{font-weight:800;color:#765900}
+.formula{font-family:Inter,sans-serif;color:#64748b;font-size:11px}
+footer{text-align:center;color:#64748b;font-size:11px;padding:10px}
+@media(max-width:700px){.inputs{grid-template-columns:1fr}.summary{grid-template-columns:1fr}.panel{padding:15px}main{margin-top:15px}.actions button{flex:1}}
+@media print{
+ @page{size:A4;margin:12mm}
+ body{background:white!important}
+ header{padding:12px 0;background:white!important;color:#101d32!important;border-bottom:3px solid #e0b000}
+ header p{color:#475569}
+ main{max-width:none;margin:10px 0;padding:0}
+ .no-print,.input-panel,footer{display:none!important}
+ #results{display:block!important}
+ .panel{box-shadow:none;border:0;padding:0;margin-bottom:12px;break-inside:avoid}
+ .phase{break-inside:avoid}
+ .phase-title,.voucher-top{print-color-adjust:exact;-webkit-print-color-adjust:exact}
+ .voucher{break-before:page}
+}
+</style>
 </head>
 <body>
-  <div class="container">
-    <h1>💰 Money Transfer</h1>
-    <form onsubmit="event.preventDefault(); transferMoney();">
-      <div id="myForm">
-        <div class="form-group">
-          <label for="sender">Your Account ID</label>
-          <input id="sender" value="1002" readonly>
-        </div>
-        
-        <div class="form-group">
-          <label for="receiver">Receiver ID</label>
-          <input id="receiver" type="number" name="receiver" placeholder="Enter receiver's account ID" required>
-        </div>
-        
-        <div class="form-group">
-          <label for="amount">Amount</label>
-          <input id="amount" type="number" name="amount" placeholder="Enter amount to transfer" required>
-        </div>
-        
-        <button id="transferbtn" type="submit">Transfer Now</button>
-      </div>
-    </form>
+<header>
+  <div class="brand">OVERSEER (39) · ENGINEERING ESTIMATE</div>
+  <h1>ကတ္တရာခင်းခြင်း လုပ်ငန်း</h1>
+  <p>Road Paving &amp; Grouting Quantity Calculator</p>
+</header>
+<main>
+<section class="panel input-panel">
+  <h2 class="section-head">အခြေခံအချက်အလက်များ</h2>
+  <div class="inputs">
+    <div><label for="width">လမ်းအကျယ် (ပေ)</label><input id="width" type="number" min="0" step="any" placeholder="ဥပမာ - 20"></div>
+    <div><label for="length">လမ်းအရှည် (ပေ)</label><input id="length" type="number" min="0" step="any" placeholder="ဥပမာ - 1000"></div>
+    <div><label for="thickness">ကတ္တရာထု (လက်မ)</label><input id="thickness" type="number" min="0" step="any" value="10.5"><div class="hint">Default = 10.5 လက်မ</div></div>
+  </div>
+  <div class="actions">
+    <button class="primary" id="calculate" onclick="calculate()">တွက်ချက်ရန်</button>
+    <button class="secondary" onclick="resetAll()">ပြန်လည်စတင်ရန်</button>
+    <button class="secondary" onclick="window.print()">Print / Save PDF</button>
+  </div>
+  <div id="loading"><span class="spinner"></span><span>တွက်ချက်နေပါသည်... ခဏစောင့်ပါ</span></div>
+  <div id="error" style="display:none;color:#b42318;font-size:13px;margin-top:12px"></div>
+</section>
 
-    <div id="statusMessage" class="status-message"></div>
-  </div>
+<div id="results">
+<section class="panel">
+  <h2 class="section-head">အခြေခံတွက်ချက်မှုရလဒ်</h2>
+  <div class="summary">
+    <div class="metric"><small>လမ်းထုထည် (ကုဗပေ)</small><strong id="volume">—</strong></div>
+    <div class="metric"><small>လမ်းဧရိယာ (စတုရန်းပေ)</small><strong id="area">—</strong></div>
+    <div class="metric"><small>ကိန်းသေ</small><strong id="constant">—</strong></div>
+  </div>
+</section>
+
+<section class="panel">
+  <h2 class="section-head">(A) ကျောက်ခင်းခြင်းလုပ်ငန်း</h2>
+  <div class="phase">
+    <div class="phase-title"><span>A-1</span> ၂" × ၄" ကျောက်ခင်းခြင်း</div>
+    <div class="table-wrap"><table><thead><tr><th>လုပ်ငန်း / ပစ္စည်း</th><th>တွက်ချက်ပုံ</th><th style="text-align:right">ပမာဏ</th><th>ယူနစ်</th></tr></thead><tbody id="stone24"></tbody></table></div>
+  </div>
+  <div class="phase">
+    <div class="phase-title"><span>A-2</span> ၁" × ၂" ကျောက်ခင်းခြင်း</div>
+    <div class="table-wrap"><table><thead><tr><th>လုပ်ငန်း / ပစ္စည်း</th><th>တွက်ချက်ပုံ</th><th style="text-align:right">ပမာဏ</th><th>ယူနစ်</th></tr></thead><tbody id="stone12"></tbody></table></div>
+  </div>
+</section>
+
+<section class="panel">
+  <h2 class="section-head">(B) Grouting လုပ်ငန်း</h2>
+  <div class="phase">
+    <div class="phase-title"><span>B-1</span> For First Grouting</div>
+    <div class="table-wrap"><table><thead><tr><th>လုပ်ငန်း / ပစ္စည်း</th><th>တွက်ချက်ပုံ</th><th style="text-align:right">ပမာဏ</th><th>ယူနစ်</th></tr></thead><tbody id="first"></tbody></table></div>
+  </div>
+  <div class="phase">
+    <div class="phase-title"><span>B-2</span> For Second Grouting</div>
+    <div class="table-wrap"><table><thead><tr><th>လုပ်ငန်း / ပစ္စည်း</th><th>တွက်ချက်ပုံ</th><th style="text-align:right">ပမာဏ</th><th>ယူနစ်</th></tr></thead><tbody id="second"></tbody></table></div>
+  </div>
+  <div class="phase">
+    <div class="phase-title"><span>C</span> For Final Grouting</div>
+    <div class="table-wrap"><table><thead><tr><th>လုပ်ငန်း / ပစ္စည်း</th><th>တွက်ချက်ပုံ</th><th style="text-align:right">ပမာဏ</th><th>ယူနစ်</th></tr></thead><tbody id="final"></tbody></table></div>
+  </div>
+</section>
+
+<section class="panel voucher" id="voucher">
+  <div class="voucher-top">
+    <div class="brand">OVERSEER (39) · MATERIAL &amp; LABOUR SUMMARY</div>
+    <h2>GRouting သုံးကြိမ် စုစုပေါင်း Voucher</h2>
+    <div style="font-size:11px;color:#dbe4ef">First + Second + Final Grouting</div>
+  </div>
+  <div class="voucher-meta">
+    <span>လမ်းအကျယ် - <b id="vWidth">—</b> ပေ</span>
+    <span>လမ်းအရှည် - <b id="vLength">—</b> ပေ</span>
+    <span>ကတ္တရာထု - <b id="vThickness">—</b> လက်မ</span>
+    <span>ဧရိယာ - <b id="vArea">—</b> စတုရန်းပေ</span>
+    <span>ကိန်းသေ - <b id="vConstant">—</b></span>
+  </div>
+  <div class="table-wrap" style="border:0;border-radius:0">
+    <table><thead><tr><th>No.</th><th>ပစ္စည်း / လုပ်သား</th><th style="text-align:right">First</th><th style="text-align:right">Second</th><th style="text-align:right">Final</th><th style="text-align:right">စုစုပေါင်း</th><th>ယူနစ်</th></tr></thead><tbody id="voucherRows"></tbody></table>
+  </div>
+  <div class="voucher-foot">မှတ်ချက် - Voucher တွင် Grouting သုံးကြိမ်အတွက် အမျိုးအစားတူ ပစ္စည်းနှင့် လုပ်သားပမာဏများကို စုပေါင်းဖော်ပြထားပါသည်။</div>
+</section>
+
+<section class="panel">
+  <h2 class="section-head">သတိပြုရန် / အထွေထွေသိမှတ်စရာများ</h2>
+  <div class="notice">
+    <div class="note-title">တွက်ချက်မှုအသုံးပြုရာတွင် သတိပြုရန်</div>
+    <ul>
+      <li>ကတ္တရာထုကို လက်မဖြင့် ထည့်သွင်းရပြီး ကုဗပေတွက်ရာတွင် ၁၂ ဖြင့်စားကာ ပေသို့ ပြောင်းလဲတွက်ချက်ထားသည်။</li>
+      <li>ကိန်းသေ = လမ်းဧရိယာ ÷ ၆၃,၃၆၀ ဖြစ်သည်။ ၆၃,၃၆၀ သည် အသုံးပြုသူသတ်မှတ်ပေးထားသော ကိန်းသေဖြစ်သည်။</li>
+      <li>၁"×၂" ကျောက်အဆင့်ရှိ လမ်းကြိတ်စက်ကို သတ်မှတ်ပေးထားသည့်အတိုင်း ၂"×၄" ကျောက်ပမာဏ ÷ ၁၀ ဖြင့်တွက်ထားသည်။</li>
+      <li>စက်မောင်းအရေအတွက်ကို လမ်းကြိတ်စက်ရက်အရေအတွက်နှင့် တူညီသည်ဟု ယူဆတွက်ချက်ထားသည်။</li>
+      <li>လုပ်သားအရေအတွက်သည် တွက်ချက်မှုအရ ဒသမကိန်းဖြစ်နိုင်သည်။ လက်တွေ့ခန့်အပ်ရာတွင် လူဦးရေပြည့်ကိန်းသို့ အပေါ်တိုးသတ်မှတ်ရန် လိုအပ်နိုင်သည်။</li>
+      <li>ဤရလဒ်များသည် ထည့်သွင်းထားသော Formula များအပေါ် အခြေခံသည့် ခန့်မှန်းပမာဏများဖြစ်သည်။ လက်တွေ့လုပ်ငန်းတွင် လမ်းအခြေအနေ၊ ပစ္စည်းဆုံးရှုံးမှု၊ စက်အသုံးပြုနိုင်မှုနှင့် လုပ်ငန်းစံနှုန်းများအလိုက် ပြန်လည်စစ်ဆေးပါ။</li>
+    </ul>
+  </div>
+</section>
+</div>
+<footer>OVERSEER (39) · Engineering Calculation Tool</footer>
 
 <script>
-  function transferMoney() {
-    const sender = document.getElementById("sender").value;
-    const receiver = document.getElementById("receiver").value;
-    const amount = document.getElementById("amount").value;
+const fmt = n => Number(n).toLocaleString('en-US',{maximumFractionDigits:3});
+const val = id => Number(document.getElementById(id).value);
+function row(name,formula,amount,unit){
+  return `<tr><td>${name}</td><td class="formula">${formula}</td><td class="num">${fmt(amount)}</td><td>${unit}</td></tr>`;
+}
+function fill(id,rows){document.getElementById(id).innerHTML=rows.join('');}
+function calculate(){
+  const w=val('width'), l=val('length'), t=val('thickness');
+  const err=document.getElementById('error');
+  err.style.display='none';
+  if(!Number.isFinite(w)||!Number.isFinite(l)||!Number.isFinite(t)||w<=0||l<=0||t<=0){
+    err.textContent='လမ်းအကျယ်၊ လမ်းအရှည်နှင့် ကတ္တရာထုတို့ကို သုညထက်ကြီးသော ကိန်းဂဏန်းများဖြင့် ဖြည့်သွင်းပါ။';
+    err.style.display='block'; return;
+  }
+  const btn=document.getElementById('calculate'), loading=document.getElementById('loading');
+  btn.disabled=true; loading.style.display='flex';
+  setTimeout(()=>{
+    const area=l*w, volume=area*t/12, k=area/63360;
+    document.getElementById('volume').textContent=fmt(volume);
+    document.getElementById('area').textContent=fmt(area);
+    document.getElementById('constant').textContent=fmt(k);
 
-    const formData = new URLSearchParams();
-    formData.append("sender", sender);
-    formData.append("receiver", receiver);
-    formData.append("amount", amount);
+    const stone24=area*.5/100, rollerA=stone24/10, seniorA=stone24/10;
+    const stone12=area*.25/100, rollerB=stone24/10, seniorB=volume/10;
+    fill('stone24',[
+      row('၂" × ၄" ကျောက်','(လမ်းဧရိယာ × 0.5) ÷ 100',stone24,'ကျင်း'),
+      row('လမ်းကြိတ်စက်','၂"×၄" ကျောက် ÷ 10',rollerA,'ရက်'),
+      row('စက်မောင်း','လမ်းကြိတ်စက်',rollerA,'ယောက်'),
+      row('ဒီဇယ်ဆီ','လမ်းကြိတ်စက် × 6',rollerA*6,'ဂါလံ'),
+      row('လုပ်သားကြီး','၂"×၄" ကျောက် ÷ 10',seniorA,'ယောက်'),
+      row('လုပ်သားငယ်','လုပ်သားကြီး × 14',seniorA*14,'ယောက်')
+    ]);
+    fill('stone12',[
+      row('၁" × ၂" ကျောက်','(လမ်းဧရိယာ × 0.25) ÷ 100',stone12,'ကျင်း'),
+      row('လမ်းကြိတ်စက်','၂"×၄" ကျောက် ÷ 10',rollerB,'ရက်'),
+      row('ဒီဇယ်ဆီ','လမ်းကြိတ်စက် × 6',rollerB*6,'ဂါလံ'),
+      row('လုပ်သားကြီး','လမ်းထုထည် ÷ 10',seniorB,'ယောက်'),
+      row('လုပ်သားငယ်','လုပ်သားကြီး × 14',seniorB*14,'ယောက်')
+    ]);
 
-    console.log("Sending data:", {
-      sender,
-      receiver,
-      amount
-    });
+    const first={chip:k*40,asphalt:k*15.82,wood:k*6.4,roller:k*15,operator:k*15,diesel:k*15*6,senior:k*15,junior:k*225};
+    const second={chip:k*36,asphalt:k*8,wood:k*3.2,roller:k*15,operator:k*15,diesel:k*15*6,senior:k*15,junior:k*200};
+    const final={chip:k*18,asphalt:k*6.4,wood:k*2.6,roller:0,operator:0,diesel:0,senior:k*12,junior:k*80};
+    const groutRows=(o)=>[
+      row('Chipping ကျောက်','ကိန်းသေ × '+(o.chip/k),o.chip,'ကျင်း'),
+      row('ကတ္တရာ','ကိန်းသေ × '+(o.asphalt/k),o.asphalt,'တန်'),
+      row('ထင်း','ကိန်းသေ × '+(o.wood/k),o.wood,'တန်'),
+      ...(o.roller?[
+        row('လမ်းကြိတ်စက်','ကိန်းသေ × 15',o.roller,'ရက်'),
+        row('စက်မောင်း','လမ်းကြိတ်စက်',o.operator,'ယောက်'),
+        row('ဒီဇယ်ဆီ','လမ်းကြိတ်စက် × 6',o.diesel,'ဂါလံ')
+      ]:[]),
+      row('လုပ်သားကြီး','ကိန်းသေ × '+(o.senior/k),o.senior,'ယောက်'),
+      row('လုပ်သားငယ်','ကိန်းသေ × '+(o.junior/k),o.junior,'ယောက်')
+    ];
+    fill('first',groutRows(first)); fill('second',groutRows(second)); fill('final',groutRows(final));
 
-    fetch("https://script.google.com/macros/s/AKfycbwozrZFeqT1JdNTHcrjj_a8iNbxLX_XRBugwLDMcgsZoGWGNef-bSlwMfYalMzMSrHxaQ/exec", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/x-www-form-urlencoded"
-      },
-      body: formData.toString()
-    })
-    .then(async res => {
-      const text = await res.text();
-      console.log("Response status:", res.status);
-      console.log("Response text:", text);
-      document.getElementById("statusMessage").innerText = `Status: ${res.status}, Response: ${text}`;
-    })
-    .catch(err => {
-      console.error("Fetch error:", err);
-      document.getElementById("statusMessage").innerText = "Error: " + err;
-    });
-  }
+    const items=[
+      ['Chipping ကျောက်','chip','ကျင်း'],['ကတ္တရာ','asphalt','တန်'],['ထင်း','wood','တန်'],
+      ['လမ်းကြိတ်စက်','roller','ရက်'],['စက်မောင်း','operator','ယောက်'],['ဒီဇယ်ဆီ','diesel','ဂါလံ'],
+      ['လုပ်သားကြီး','senior','ယောက်'],['လုပ်သားငယ်','junior','ယောက်']
+    ];
+    document.getElementById('voucherRows').innerHTML=items.map((it,i)=>{
+      const a=first[it[1]],b=second[it[1]],c=final[it[1]];
+      return `<tr><td>${i+1}</td><td>${it[0]}</td><td class="num">${fmt(a)}</td><td class="num">${fmt(b)}</td><td class="num">${fmt(c)}</td><td class="num">${fmt(a+b+c)}</td><td>${it[2]}</td></tr>`;
+    }).join('');
+    document.getElementById('vWidth').textContent=fmt(w);
+    document.getElementById('vLength').textContent=fmt(l);
+    document.getElementById('vThickness').textContent=fmt(t);
+    document.getElementById('vArea').textContent=fmt(area);
+    document.getElementById('vConstant').textContent=fmt(k);
+    document.getElementById('results').style.display='block';
+    loading.style.display='none'; btn.disabled=false;
+    document.getElementById('results').scrollIntoView({behavior:'smooth',block:'start'});
+  },2000);
+}
+function resetAll(){
+  document.getElementById('width').value='';
+  document.getElementById('length').value='';
+  document.getElementById('thickness').value='10.5';
+  document.getElementById('results').style.display='none';
+  document.getElementById('error').style.display='none';
+  document.getElementById('loading').style.display='none';
+  document.getElementById('calculate').disabled=false;
+}
 </script>
-
 </body>
 </html>
